@@ -333,7 +333,10 @@ defmodule GenRMQ.Publisher do
 
     {:ok, conn} = connect(state)
     {:ok, channel} = Channel.open(conn)
-    GenRMQ.Binding.declare_exchange(channel, exchange)
+
+    if config[:setup_exchange] do
+      GenRMQ.Binding.declare_exchange(channel, exchange)
+    end
 
     with_confirmations = Keyword.get(config, :enable_confirmations, false)
     :ok = activate_confirmations(channel, with_confirmations)

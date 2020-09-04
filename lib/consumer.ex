@@ -624,7 +624,11 @@ defmodule GenRMQ.Consumer do
     end
 
     Basic.qos(chan, prefetch_count: prefetch_count)
-    setup_queue(queue_config.name, queue_config.options, chan, config[:exchange], config[:routing_key])
+
+    if config[:setup_queue] do
+      setup_queue(queue_config.name, queue_config.options, chan, config[:exchange], config[:routing_key])
+    end
+
     consumer_tag = apply(module, :consumer_tag, [])
     {:ok, _consumer_tag} = Basic.consume(chan, queue_config.name, nil, consumer_tag: consumer_tag)
     state
